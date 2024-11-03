@@ -6,7 +6,7 @@ static size_t	lead_check(char const *s1, char const *set) {
 	lead = 0;
 	while (s1[lead]) {
 		if (ft_strchr(set, s1[lead]))
-			lead++;
+			lead += 1;
 		else
 			break ;
 	}
@@ -20,7 +20,7 @@ static size_t	end_check(char const *s1, char const *set)
 	end = ft_strlen(s1);
 	while (end > 0) {
 		if (ft_strchr(set, s1[end - 1]))
-			end--;
+			end -= 1;
 		else
 			break ;
 	}

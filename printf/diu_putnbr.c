@@ -1,32 +1,32 @@
 #include "../includes/ft_printf.h"
 
 static size_t	ntr_len(unsigned int n) {
-	size_t		i;
+	size_t	i;
 
 	if (n == 0)
 		return 1;
 	i = 0;
 	while (n != 0) {
 		n /= 10;
-		i++;
+		i += 1;
 	}
 	return i;
 }
 
 static char	*ntr_create(unsigned int n) {
-	char		*str;
-	size_t		len;
-	size_t		i;
+	char	*str;
+	size_t	len;
+	size_t	i;
 
 	len = ntr_len(n);
-	str = ft_calloc((len + 1), sizeof(char));
-	if (str == NULL)
+	str = malloc((len + 1) * sizeof(char));
+	if (!str)
 		return NULL;
 	i = 0;
 	while (i < len) {
 		str[len - 1 - i] = (n % 10) + '0';
 		n /= 10;
-		i++;
+		i += 1;
 	}
 	str[len] = '\0';
 	return str;
@@ -34,11 +34,11 @@ static char	*ntr_create(unsigned int n) {
 
 int	u_putnbr(unsigned int n)
 {
-	char		*ntr;
-	ssize_t		count;
+	char	*ntr;
+	ssize_t	count;
 
 	ntr = ntr_create(n);
-	if (ntr == NULL)
+	if (!ntr)
 		return -1;
 	count = write (1, ntr, ntr_len(n));
 	if (count == -1) {

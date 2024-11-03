@@ -12,7 +12,7 @@ void	*ft_memcpy(void *dst, const void *src, size_t n) {
 	i = 0;
 	while (i < n) {
 		nd[i] = ns[i];
-		i++;
+		i += 1;
 	}
 	return nd;
 }

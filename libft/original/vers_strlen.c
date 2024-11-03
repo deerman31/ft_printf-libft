@@ -1,7 +1,7 @@
 #include "libft.h"
 
 size_t	vers_strlen(const char *s, const char *end_s) {
-	size_t		len;
+	size_t	len;
 
 	if (s == NULL)
 		return 0;

@@ -8,6 +8,6 @@ void	ft_striteri(char *s, void (*f)(unsigned int, char*)) {
 	i = 0;
 	while (s[i]) {
 		f((unsigned int)i, &s[i]);
-		i++;
+		i += 1;
 	}
 }

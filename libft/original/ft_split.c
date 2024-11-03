@@ -1,78 +1,70 @@
 #include "libft.h"
 
-static char	**all_free(char **strs) {
-	size_t		i;
+static void	**all_free(char **strs) {
+	size_t	i;
 
 	i = 0;
 	while (strs[i]) {
 		free(strs[i]);
-		i++;
+		i += 1;
 	}
 	free(strs);
+	strs = NULL;
 	return NULL;
 }
 
-static char	*ft_split_dup(char const *s, char c) {
-	char	*str;
-	size_t	len;
-
-	len = 0;
-	while (s[len] && s[len] != c)
-		len++;
-	str = ft_calloc(len + 1, sizeof(char));
-	if (str == NULL)
-		return NULL;
-	ft_strlcpy(str, s, len + 1);
-	return str;
-}
-
-static char	**ft_split_helper(char **strs, char const *s, char c) {
+static size_t	split_num(char const *s, char c) {
+	size_t	ret;
 	size_t	i;
-	size_t	count;
+	size_t	j;
 
+	ret = 0;
 	i = 0;
-	count = 0;
 	while (s[i]) {
 		while (s[i] && s[i] == c)
-			i++;
-		if (s[i]) {
-			strs[count] = ft_split_dup(&s[i], c);
-			if (strs[count] == NULL)
-				return all_free(strs);
-			count++;
-		}
-		while (s[i] && s[i] != c)
-			i++;
+			i += 1;
+		j = 0;
+		while (s[i + j] && s[i + j] != c)
+			j += 1;
+		if (j > 0)
+			ret += 1;
+		i += j;
 	}
-	strs[count] = NULL;
-	return strs;
+	return ret;
 }
 
-static size_t	split_count(char const *s, char c)
-{
-	size_t		i;
-	size_t		len;
+static char	**ft_split_help(char **strs, char const *s, char c) {
+	size_t	i;
+	size_t	j;
+	size_t	k;
 
 	i = 0;
-	len = 0;
+	k = 0;
 	while (s[i]) {
 		while (s[i] && s[i] == c)
-			i++;
-		if (s[i])
-			len++;
-		while (s[i] && s[i] != c)
-			i++;
+			i += 1;
+		j = 0;
+		while (s[i + j] && s[i + j] != c)
+			j += 1;
+		if (j > 0) {
+			strs[k] = ft_strndup(&s[i], j);
+			if (!strs[k])
+				return ((char **)all_free(strs));
+			k += 1;
+		}
+		i += j;
 	}
-	return len;
+	strs[k] = NULL;
+	return strs;
 }
 
 char	**ft_split(char const *s, char c) {
 	char	**strs;
 
-	if (s == NULL)
+	if (!s)
 		return NULL;
-	strs = ft_calloc((split_count(s, c) + 1), sizeof(char *));
-	if (strs == NULL)
+	strs = malloc(sizeof(char *) * (split_num(s, c) + 1));
+	if (!strs)
 		return NULL;
-	return ft_split_helper(strs, s, c);
+	return ft_split_help(strs, s, c);
 }

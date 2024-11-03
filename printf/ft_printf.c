@@ -1,7 +1,7 @@
 #include "../includes/ft_printf.h"
 
 static int	print_sign(t_sc *text, size_t i) {
-	int		flag;
+	int	flag;
 
 	flag = 1;
 	if (text->format[i] == 'c')
@@ -25,7 +25,7 @@ static int	print_sign(t_sc *text, size_t i) {
 }
 
 static int	print_specifier(t_sc *text, size_t i) {
-	ssize_t		flag;
+	ssize_t	flag;
 
 	flag = 1;
 	if (ft_strchr(MODIFIER, text->format[i]))
@@ -40,14 +40,14 @@ static int	print_specifier(t_sc *text, size_t i) {
 }
 
 static int	print_branch(t_sc *text) {
-	size_t		i;
-	int			flag;
+	size_t	i;
+	int		flag;
 
 	i = 0;
 	flag = 1;
 	while (text->format[i] != '\0') {
 		if (text->format[i] == '%') {
-			i++;
+			i += 1;
 			flag = print_specifier(text, i);
 		}
 		else {
@@ -56,14 +56,13 @@ static int	print_branch(t_sc *text) {
 		}
 		if (flag == -1)
 			return -1;
-		i++;
+		i += 1;
 	}
 	return 1;
 }
 
-int	ft_printf(const char *format, ...)
-{
-	t_sc		text;
+int	ft_printf(const char *format, ...) {
+	t_sc	text;
 
 	text.count = 0;
 	text.format = format;

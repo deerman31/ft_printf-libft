@@ -1,26 +1,26 @@
 #include "../includes/ft_printf.h"
 
 static size_t	hexadecimal_len(size_t n) {
-	size_t		len;
+	size_t	len;
 
 	if (n == 0)
 		return 1;
 	len = 0;
 	while (n != 0) {
 		n /= 16;
-		len++;
+		len += 1;
 	}
 	return len;
 }
 
 static char	*convert_hexadecimal(size_t num) {
-	size_t		i;
-	size_t		len;
-	char		*str;
+	size_t	i;
+	size_t	len;
+	char	*str;
 
 	len = hexadecimal_len(num);
-	str = ft_calloc((len + 1), sizeof(char));
-	if (str == NULL)
+	str = malloc((len + 1) * sizeof(char));
+	if (!str)
 		return NULL;
 	i = 0;
 	while (i < len) {
@@ -28,7 +28,7 @@ static char	*convert_hexadecimal(size_t num) {
 		if (str[len - i - 1] >= ':' && str[len - i - 1] <= '?')
 			str[len - i - 1] += 39;
 		num /= 16;
-		i++;
+		i += 1;
 	}
 	str[len] = '\0';
 	return str;
@@ -41,13 +41,13 @@ int	x_convert(unsigned int u, const char sign) {
 
 	len = hexadecimal_len((size_t)u);
 	str = convert_hexadecimal((size_t)u);
-	if (str == NULL)
+	if (!str)
 		return -1;
 	i = 0;
 	while (sign == 'X' && i < len) {
 		if (!ft_isdigit(str[i]))
 			str[i] -= ' ';
-		i++;
+		i += 1;
 	}
 	if (write (1, str, len) == -1) {
 		free(str);
@@ -58,12 +58,12 @@ int	x_convert(unsigned int u, const char sign) {
 }
 
 int	p_convert(uintptr_t p) {
-	size_t		len;
-	char		*str;
+	size_t	len;
+	char	*str;
 
 	len = hexadecimal_len((size_t)p);
 	str = convert_hexadecimal((size_t)p);
-	if (str == NULL)
+	if (!str)
 		return -1;
 	if (write (1, "0x", 2) == -1) {
 		free(str);
