@@ -1,52 +1,55 @@
 #include "libft.h"
 
-static size_t	ltoa_count(unsigned long n) {
-	size_t	i;
-
-	if (n == 0)
+static int	get_number_sign(long num) {
+	if (num == 0)
+		return 0;
+	else if (num < 0)
+		return -1;
+	else
 		return 1;
-	i = 0;
-	while (n > 0) {
-		n /= 10;
-		i += 1;
-	}
-	return i;
 }
 
-static void	ltoa_helper(char *str, unsigned long n, size_t len, size_t sign)
-{
-	size_t		i;
+static void	int_to_reversed_string(long num, char *dst) {
+	const int	sign = get_number_sign(num);
+	int			i;
+
+	i = 0;
+	while (num != 0) {
+		dst[i] = (num % 10) * sign + '0';
+		num /= 10;
+		i += 1;
+	}
+	if (sign < 0) {
+		dst[i] = '-';
+		i += 1;
+	} else if (sign == 0) {
+		dst[i] = '0';
+		i += 1;
+	}
+	dst[i] = '\0';
+}
+
+static void	reverse_cpy(char *dst, const char *src) {
+	const int	len = (int)ft_strlen(src);
+	int			i;
 
 	i = 0;
 	while (i < len) {
-		if (sign == 1 && (len - 1 - i) == 0)
-			str[0] = '-';
-		else
-			str[len - 1 - i] = (n % 10) + '0';
-		n /= 10;
-		i++;
+		dst[i] = src[len - i - 1];
+		i += 1;
 	}
-	str[len] = '\0';
+	dst[i] = '\0';
 }
 
-char	*ft_ltoa(long n)
-{
-	char			*str;
-	size_t			len;
-	size_t			sign;
-	unsigned long	u_num;
+char	*ft_ltoa(long n) {
+	char			*s;
+	char			tmp[21];
 
-	sign = 0;
-	if (n < 0) {
-		u_num = (unsigned long)(n * -1);
-		sign += 1;
-	}
-	else
-		u_num = (unsigned long)n;
-	len = ltoa_count(u_num) + sign;
-	str = malloc(sizeof(char) * (len + 1));
-	if (str == NULL)
-		return NULL;
-	ltoa_helper(str, u_num, len, sign);
-	return str;
+	int_to_reversed_string(n, tmp);
+	s = malloc(sizeof(char) * (ft_strlen(tmp) + 1));
+	if (!s)
+		return (NULL);
+	reverse_cpy(s, tmp);
+	return (s);
 }
+

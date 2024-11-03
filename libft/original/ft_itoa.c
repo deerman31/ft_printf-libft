@@ -1,52 +1,55 @@
 #include "libft.h"
 
-static size_t	itoa_count(unsigned int n) {
-	size_t		i;
-
-	i = 0;
-	if (n == 0)
+static int	get_number_sign(int num) {
+	if (num == 0)
+		return 0;
+	else if (num < 0)
+		return -1;
+	else
 		return 1;
-	while (n > 0) {
-		n /= 10;
-		i++;
-	}
-	return i;
 }
 
-static void	itoa_helper(char *ptr, unsigned int n, size_t len, size_t sign) {
-	size_t		i;
+static void	int_to_reversed_string(int num, char *dst) {
+	const int	sign = get_number_sign(num);
+	int			i;
+
+	i = 0;
+	while (num != 0) {
+		dst[i] = (num % 10) * sign + '0';
+		num /= 10;
+		i += 1;
+	}
+	if (sign < 0) {
+		dst[i] = '-';
+		i += 1;
+	} else if (sign == 0) {
+		dst[i] = '0';
+		i += 1;
+	}
+	dst[i] = '\0';
+}
+
+static void	reverse_cpy(char *dst, const char *src) {
+	const int	len = (int)ft_strlen(src);
+	int			i;
 
 	i = 0;
 	while (i < len) {
-		if (sign == 1 && (len - 1 - i) == 0)
-			ptr[0] = '-';
-		else
-			ptr[len - 1 - i] = (n % 10) + '0';
-		n /= 10;
-		i++;
+		dst[i] = src[len - i - 1];
+		i += 1;
 	}
-	ptr[len] = '\0';
+	dst[i] = '\0';
 }
 
-char	*ft_itoa(int n)
-{
-	char			*ptr;
-	size_t			len;
-	size_t			sign;
-	unsigned int	u_num;
+char	*ft_itoa(int n) {
+	char	*s;
+	char	tmp[12];
 
-	ptr = "";
-	sign = 0;
-	if (n < 0) {
-		u_num = (unsigned int)(n * -1);
-		sign++;
-	}
-	else
-		u_num = (unsigned int)n;
-	len = itoa_count(u_num) + sign;
-	ptr = ft_calloc(len + 1, sizeof(char));
-	if (ptr == NULL)
+	int_to_reversed_string(n, tmp);
+	s = malloc(sizeof(char) * (ft_strlen(tmp) + 1));
+	if (!s)
 		return NULL;
-	itoa_helper(ptr, u_num, len, sign);
-	return ptr;
+	reverse_cpy(s, tmp);
+	return s;
 }
+

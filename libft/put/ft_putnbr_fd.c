@@ -1,54 +1,53 @@
 #include "libft.h"
 
-static size_t	nbr_len(unsigned int n) {
-	size_t	i;
-
-	if (n == 0)
-		return (1);
-	i = 0;
-	while (n != 0) {
-		n /= 10;
-		i++;
-	}
-	return (i);
+static int	get_number_sign(int num) {
+	if (num == 0)
+		return 0;
+	else if (num < 0)
+		return -1;
+	else
+		return 1;
 }
 
-static int	putnbr_help(unsigned int n, size_t len, int fd) {
-	size_t	i;
-	char	c;
+static void	int_to_reversed_string(int num, char *dst) {
+	const int	sign = get_number_sign(num);
+	int			i;
+
+	i = 0;
+	while (num != 0) {
+		dst[i] = (num % 10) * sign + '0';
+		num /= 10;
+		i += 1;
+	}
+	if (sign < 0) {
+		dst[i] = '-';
+		i += 1;
+	} else if (sign == 0) {
+		dst[i] = '0';
+		i += 1;
+	}
+	dst[i] = '\0';
+}
+
+static void	reverse_cpy(char *dst, const char *src) {
+	const int	len = (int)ft_strlen(src);
+	int			i;
 
 	i = 0;
 	while (i < len) {
-		n /= 10;
-		i++;
+		dst[i] = src[len - i - 1];
+		i += 1;
 	}
-	c = (n % 10) + '0';
-	if (write (fd, &c, 1) == -1)
-		return -1;
-	return 1;
+	dst[i] = '\0';
 }
 
 int	ft_putnbr_fd(int n, int fd) {
-	size_t			i;
-	size_t			len;
-	unsigned int	un;
-	int				f;
+	char	tmp[12];
+	char	s[12];
+	size_t	ret;
 
-	f = 0;
-	if (n < 0) {
-		if (write (fd, "-", 1) == -1)
-			return (-1);
-		un = (unsigned int)(n * -1);
-		f = 1;
-	}
-	else
-		un = (unsigned int)n;
-	len = nbr_len(un);
-	i = 0;
-	while (i < len) {
-		if (putnbr_help(un, len - i - 1, fd) == -1)
-			return -1;
-		i++;
-	}
-	return (int)len + f;
+	int_to_reversed_string(n, tmp);
+	reverse_cpy(s, tmp);
+	ret = write (fd, s, ft_strlen(s));
+	return (int)(ret);
 }
